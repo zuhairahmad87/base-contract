@@ -11,3 +11,4 @@ contract MessageWall {
         return messages.length;
     }
 }
+

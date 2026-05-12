@@ -3,7 +3,6 @@ pragma solidity ^0.8.20;
 contract YesNoVote {
     uint256 public yes;
     uint256 public no;
-
     mapping(address => bool) public voted;
 
     function vote(bool answer) public {

@@ -1,0 +1,20 @@
+pragma solidity ^0.8.20;
+
+contract YesNoVote {
+    uint256 public yes;
+    uint256 public no;
+
+    mapping(address => bool) public voted;
+
+    function vote(bool answer) public {
+        require(!voted[msg.sender], "already voted");
+
+        voted[msg.sender] = true;
+
+        if(answer){
+            yes++;
+        } else {
+            no++;
+        }
+    }
+}

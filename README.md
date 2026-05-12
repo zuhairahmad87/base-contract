@@ -1,1 +1,1 @@
-this is for learening
+for learening

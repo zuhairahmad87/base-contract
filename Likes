@@ -1,0 +1,9 @@
+pragma solidity ^0.8.20;
+
+contract Likes {
+    uint256 public likes;
+
+    function like() public {
+        likes++;
+    }
+}

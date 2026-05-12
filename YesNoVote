@@ -10,6 +10,7 @@ contract YesNoVote {
     function vote(bool answer) public {
         require(!voted[msg.sender], "already voted");
 
+
         voted[msg.sender] = true;
 
         if(answer){

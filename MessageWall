@@ -1,7 +1,6 @@
 pragma solidity ^0.8.20;
 contract MessageWall {
     string[] public messages;
-
     function post(string memory text) public {
         messages.push(text);
     }

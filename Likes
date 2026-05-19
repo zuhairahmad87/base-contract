@@ -1,8 +1,63 @@
 pragma solidity ^0.8.20;
-contract Likes {
-    uint256 public likes;
 
+/**
+ * @title Likes
+ * @dev A contract to manage likes with user tracking and validation
+ */
+contract Likes {
+    uint256 public totalLikes;
+    
+    mapping(address => bool) public userHasLiked;
+    address[] public likers;
+
+    event LikeAdded(address indexed liker, uint256 totalLikes);
+    event LikeRemoved(address indexed liker, uint256 totalLikes);
+
+    /**
+     * @dev Add a like from the caller
+     * Prevents duplicate likes from the same address
+     */
     function like() public {
-        likes++;
+        require(!userHasLiked[msg.sender], "You have already liked this");
+        
+        userHasLiked[msg.sender] = true;
+        likers.push(msg.sender);
+        totalLikes++;
+        
+        emit LikeAdded(msg.sender, totalLikes);
+    }
+
+    /**
+     * @dev Remove a like from the caller
+     */
+    function unlike() public {
+        require(userHasLiked[msg.sender], "You have not liked this");
+        
+        userHasLiked[msg.sender] = false;
+        totalLikes--;
+        
+        emit LikeRemoved(msg.sender, totalLikes);
+    }
+
+    /**
+     * @dev Get the total number of likes
+     */
+    function getLikeCount() public view returns (uint256) {
+        return totalLikes;
+    }
+
+    /**
+     * @dev Get the address of a liker at a specific index
+     */
+    function getLiker(uint256 _index) public view returns (address) {
+        require(_index < likers.length, "Index out of bounds");
+        return likers[_index];
+    }
+
+    /**
+     * @dev Get all likers
+     */
+    function getAllLikers() public view returns (address[] memory) {
+        return likers;
     }
 }

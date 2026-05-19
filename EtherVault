@@ -1,8 +1,72 @@
 pragma solidity ^0.8.20;
-contract EtherVault {
-    function deposit() public payable {}
 
-    function getBalance() public view returns(uint256){
+/**
+ * @title EtherVault
+ * @dev A simple contract to manage ether deposits and withdrawals
+ */
+contract EtherVault {
+    
+    // Track user balances
+    mapping(address => uint256) public userBalances;
+    
+    // Total contract balance
+    uint256 public totalBalance;
+    
+    // Events
+    event Deposited(address indexed depositor, uint256 amount);
+    event Withdrawn(address indexed withdrawer, uint256 amount);
+    
+    /**
+     * @dev Deposit ether into the vault
+     */
+    function deposit() public payable {
+        require(msg.value > 0, "Deposit amount must be greater than 0");
+        
+        userBalances[msg.sender] += msg.value;
+        totalBalance += msg.value;
+        
+        emit Deposited(msg.sender, msg.value);
+    }
+    
+    /**
+     * @dev Withdraw ether from the vault
+     * @param amount The amount to withdraw
+     */
+    function withdraw(uint256 amount) public {
+        require(amount > 0, "Withdrawal amount must be greater than 0");
+        require(userBalances[msg.sender] >= amount, "Insufficient balance");
+        
+        userBalances[msg.sender] -= amount;
+        totalBalance -= amount;
+        
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Withdrawal failed");
+        
+        emit Withdrawn(msg.sender, amount);
+    }
+    
+    /**
+     * @dev Get the balance of the caller
+     * @return The balance of the caller
+     */
+    function getBalance() public view returns(uint256) {
+        return userBalances[msg.sender];
+    }
+    
+    /**
+     * @dev Get the total balance of the contract
+     * @return The total balance of the contract
+     */
+    function getContractBalance() public view returns(uint256) {
         return address(this).balance;
+    }
+    
+    /**
+     * @dev Get the balance of a specific address
+     * @param account The address to check
+     * @return The balance of the account
+     */
+    function getAccountBalance(address account) public view returns(uint256) {
+        return userBalances[account];
     }
 }
